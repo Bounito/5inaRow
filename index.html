@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" lang="fr" content="5 à la suite" />
+    <meta name="description" lang="en" content="5 in a Row" />
+    <link rel="stylesheet" href="style.css">
+    <title>🔵🔴 5 in a row</title>
+
+</head>
+<body>
+<div id="loadingScreen" class="loading-screen">
+    <div class="loading-spinner"></div>
+</div>
+
+<div id="divMain">
+    
+    <!--   ===================================================   -->
+    <!--                                GRID                     -->
+    <!--   ===================================================   -->
+    <div id="divGrid">
+    </div>
+    <!--   ===================================================   -->
+    <!--                                Score                    -->
+    <!--   ===================================================   -->
+    <div id="divScore0" class="classScore">0</div>
+    <div id="divScore1" class="classScore">0</div>
+
+    <!--   ===================================================   -->
+    <!--                                Menu                     -->
+    <!--   ===================================================   -->
+    <div id="divMenuBtn" class="overBtn">Menu</div>
+
+    <div id="divMenuContainer">
+        <div class="classCadre">
+            <div  class="classHoriz">
+                <div>
+                    <span style="font-size: 16px;font-weight: 900;">🔵🔴 5 in a row</span>
+                    <br>
+                    by Boun 2024 ©
+                </div>
+                <button id="divMenuClose" class="classBouton">Close Menu</button>
+            </div>
+
+        </div>
+        <div class="classCadre">
+            
+            <div  class="classHoriz">
+                <div class="classSousCadre">
+                    <b>Grid size</b>
+                    <div>
+                        <input type="number" id="inputGridY" name="inputGridY" min="10" max="100" value="15"/>
+                        <label for="inputGridY">↔ width:</label>
+                    </div>             
+                    <div>
+                        <input type="number" id="inputGridX" name="inputGridX" min="10" max="100" value="15"/>
+                        <label for="inputGridX">↕ height:</label>                        
+                    </div>
+                </div>
+
+                <div class="classSousCadre">
+                    <div>
+                        <label for="rangeZoomScale">Default zoom</label>
+                        <br>
+                        <input type="range" id="rangeZoomScale" min=".2" max="2" step=".01" value="1.2"/>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="chkFocus" checked/>
+                        <label for="chkFocus">Focus follow point</label>                
+                    </div>
+                </div>
+
+                <div class="classSousCadre">
+                    <div>
+                        <input type="checkbox" id="chkAutoLvl" checked/>
+                        <label for="chkAutoLvl">🏄‍♂️Auto Adjust Level from Scores</label>
+                    </div>
+                    <div>
+                        <label for="rngCmpDelay">Computer play delay</label>
+                        <br>
+                        <input type="range" id="rngCmpDelay" min="100" max="3000" step="100" value="1200"/>
+                    </div>                
+                </div>
+                <div>
+                    <button id="divMenuRestart" class="classBouton">Restart</button>
+                </div>
+            </div>
+        </div>
+        <div class="classCadre">            
+            <div class="classHoriz">
+                <div class="classPlayer0"><b>Player 1</b></div>
+                <div class="classSousCadre">
+                    <input type="radio" id="p0ModeHuman" name="p0Mode" value="Human" checked/>
+                    <label for="p0ModeHuman">👨Human</label>
+                    <input type="radio" id="p0ModeComputer" name="p0Mode" value="Computer" />
+                    <label for="p0ModeComputer">🤖Computer</label>
+                </div>
+                <div class="classSousCadre">
+                    <b>Tips : Shadows</b>
+                    <br>
+                    <input type="checkbox" id="p0ChkTipsShadAdv4" checked/>
+                    <label for="p0ChkTipsShadAdv4" class="classPlayer1">4 aligns Adverse</label>
+                    <br>
+                    <input type="checkbox" id="p0ChkTipsShadAdv3" checked/>
+                    <label for="p0ChkTipsShadAdv3" class="classPlayer1">3 aligns Adverse</label>        
+                    <br>
+                    <input type="checkbox" id="p0ChkTipsShadPl4" checked/>
+                    <label for="p0ChkTipsShadPl4" class="classPlayer0">4 aligns Player</label>        
+                    <br>
+                    <input type="checkbox" id="p0ChkTipsShadPl3" checked/>
+                    <label for="p0ChkTipsShadPl3" class="classPlayer0">3 aligns Player</label>
+                </div>
+                <div class="classSousCadre">
+                    <b>Tips : Icons</b>
+                    <br>
+                    <input type="checkbox" id="p0ChkTipsIconAdv" checked/>
+                    <label for="p0ChkTipsIconAdv">best Adverse icon💥💢🚫</label>
+                    <br>
+                    <input type="checkbox" id="p0ChkTipsIconPl" checked/>
+                    <label for="p0ChkTipsIconPl">best Player icon💚💛🤍</label>        
+                </div>
+                <div class="classSousCadre">
+                    <b>Tips : Best</b>
+                    <br>
+                    <input type="checkbox" id="p0ChkTipsHigh" checked/>
+                    <label for="p0ChkTipsHigh">best Position icon🥰</label>
+                    <br>
+                    <input type="checkbox" id="p0ChkAgress" />
+                    <label for="p0ChkAgress">Agressive on tie</label>
+                </div>      
+                <div class="classSousCadre">
+                    <b>Minimize IA</b>
+                    <br>
+                    <label for="p0RngPrbAdv">Fail Prob. Adverse</label>
+                    <br>
+                    <input type="range" id="p0RngPrbAdv" min="0" max="1" step=".1" value="0"/>
+                    <br>
+                    <label for="p0RngPrbPl">Fail Prob. Player</label>
+                    <br>
+                    <input type="range" id="p0RngPrbPl" min="0" max="1" step=".1" value="0"/>
+                </div>
+
+            </div>
+        </div>
+        <div class="classCadre">
+            <div  class="classHoriz">
+                <div class="classPlayer1"><b>Player 2</b></div>
+                <div class="classSousCadre">
+                    <input type="radio" id="p1ModeHuman" name="p1Mode" value="Human" />
+                    <label for="p1ModeHuman">👨Human</label>
+                    <input type="radio" id="p1ModeComputer" name="p1Mode" value="Computer" checked/>
+                    <label for="p1ModeComputer">🤖Computer</label>
+                </div>
+                <div class="classSousCadre">
+                    <b>Tips : Shadows</b>
+                    <br>
+                    <input type="checkbox" id="p1ChkTipsShadAdv4" />
+                    <label for="p1ChkTipsShadAdv4" class="classPlayer0">4 aligns Adverse</label>
+                    <br>
+                    <input type="checkbox" id="p1ChkTipsShadAdv3" />
+                    <label for="p1ChkTipsShadAdv3" class="classPlayer0">3 aligns Adverse</label>        
+                    <br>
+                    <input type="checkbox" id="p1ChkTipsShadPl4" />
+                    <label for="p1ChkTipsShadPl4" class="classPlayer1">4 aligns Player</label>        
+                    <br>
+                    <input type="checkbox" id="p1ChkTipsShadPl3" />
+                    <label for="p1ChkTipsShadPl3" class="classPlayer1">3 aligns Player</label>
+                </div>
+                <div class="classSousCadre">
+                    <b>Tips : Icons</b>
+                    <br>
+                    <input type="checkbox" id="p1ChkTipsIconAdv" />
+                    <label for="p1ChkTipsIconAdv">best Adverse icon💥💢🚫</label>
+                    <br>
+                    <input type="checkbox" id="p1ChkTipsIconPl" />
+                    <label for="p1ChkTipsIconPl">best Player icon💚💛🤍</label>        
+                </div>
+                <div class="classSousCadre">
+                    <b>Tips : Best</b>
+                    <br>
+                    <input type="checkbox" id="p1ChkTipsHigh" />
+                    <label for="p1ChkTipsHigh">best Position icon🥰</label>
+                    <br>
+                    <input type="checkbox" id="p1ChkAgress" />
+                    <label for="p1ChkAgress">Agressive on tie</label>
+                </div>      
+                <div class="classSousCadre">
+                    <b>Minimize IA</b>
+                    <br>
+                    <label for="p1RngPrbAdv">Fail Prob. Adverse</label>
+                    <br>
+                    <input type="range" id="p1RngPrbAdv" min="0" max="1" step=".1" value=".2"/>
+                    <br>
+                    <label for="p1RngPrbPl">Fail Prob. Player</label>
+                    <br>
+                    <input type="range" id="p1RngPrbPl" min="0" max="1" step=".1" value=".2"/>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!--   ===================================================   -->
+    <!--                                Zoom                     -->
+    <!--   ===================================================   -->
+
+    <div id="divFullScreen" class="overBtn">📺</div>
+
+    <!--   ===================================================   -->
+    <!--                               Sound                     -->
+    <!--   ===================================================   -->
+
+    <div id="divSound" class="overBtn">🔊</div>
+    <div id="snackbar">Some text some message..</div>
+
+</div>
+
+
+<audio id="myAudio0"></audio>
+<audio id="myAudio1"></audio>
+<audio id="myAudio2"></audio>
+<audio id="myAudio3"></audio>
+<audio id="myAudio4"></audio>
+<audio id="myAudio5"></audio>
+<audio id="myAudio6"></audio>
+<audio id="myAudio7"></audio>
+<audio id="myAudio8"></audio>
+<audio id="myAudio9"></audio>
+<audio id="myAudio10"></audio>
+<audio id="myAudio11"></audio>
+<audio id="myAudio12"></audio>
+<audio id="myAudio13"></audio>
+<audio id="myAudio14"></audio>
+<audio id="myAudio15"></audio>
+<audio id="myAudio16"></audio>
+<audio id="myAudio17"></audio>
+<audio id="myAudio18"></audio>
+<audio id="myAudio19"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>

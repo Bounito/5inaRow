@@ -1,0 +1,702 @@
+:root {
+    --cellSizePx: 40px;
+    --cellSize: 40;
+    --cellNbX: 30;
+    --cellNbY: 30;
+    --clicSizePx: 16px;
+    --pointSizePx: 30px;
+    --menuColorR: 74;
+    --menuColorG: 72;
+    --menuColorB: 91;
+    --animSpeedPoint: .3s;
+    --animSpeedLine: 2s;
+}
+
+/* Désactiver la sélection de texte */
+* {
+    -webkit-touch-callout: none;
+    -webkit-user-callout: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-modify: none;
+    -webkit-highlight: none;
+    user-select: none;
+}
+
+body, html {
+    font-family: Arial;
+    padding: 0px;
+    margin: 0px;
+    background-color:  rgb(205, 205, 205);
+
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+input[type='number']{
+    width: 40px;
+} 
+
+#divMain {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 0px;
+    margin: 0px;
+}
+
+
+
+/**************************************************/
+/***                                            ***/
+/***                  GRILLE                    ***/
+/***                                            ***/
+/**************************************************/
+#divGrid {
+    position: absolute;
+    transform-origin: center;
+    transition: transform 1s ease;
+    top: 0;
+    left: 0;
+    background-size: cover;
+    background-position: center;
+    --divSizeX: calc(var(--cellSizePx) * var(--cellNbX) + 1px);
+    --divSizeY: calc(var(--cellSizePx) * var(--cellNbY) + 1px);
+
+    /*display: grid;  Pour afficher la grille */
+    grid-template-columns: repeat(var(--cellNbX), var(--cellSizePx)); /* 36 colonnes de 10px chacune */
+    grid-template-rows: repeat(var(--cellNbY), var(--cellSizePx)); /* 36 lignes de 10px chacune */
+    gap: 0px; /* Pas d'espace entre les points */
+
+    width: var(--divSizeX); /* Largeur de la grille qui prend toute la largeur de l'écran */
+    height: var(--divSizeY); /* Hauteur de la grille sur toute la hauteur de l'écran */
+    /*position: relative; /* Nécessaire pour la surimpression */
+    padding: 0px;
+    margin: 0px;    
+
+    --size: var(--cellSizePx); /* Taille d'une cellule de la grille */
+    --halfSize: calc(var(--cellSizePx)/2);
+    --thickness: 1px; /* Taille du point (bordure des points) */
+    background:
+      conic-gradient(
+        from 90deg at var(--thickness) var(--thickness), 
+        rgb(205, 205, 205) 25%, #93a7bb 0
+      ) var(--halfSize) var(--halfSize) / var(--size) var(--size); /* Taille du motif de la grille */
+}
+
+
+.classClicable {
+    position: absolute;
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center;    /* Centre verticalement */
+    
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+
+    width: var(--clicSizePx);
+    height: var(--clicSizePx);
+    margin: calc(var(--cellSizePx)/2 - var(--clicSizePx)/2);
+    padding: 0px;
+    border-radius: 50%;
+    background-color: darkblue;
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: var(--clicSizePx);
+    opacity: .7;
+    cursor: pointer;
+    transition: background-color var(--animSpeedPoint) ease;
+    overflow:visible;
+}
+
+.classCliked {
+    width: var(--pointSizePx);
+    height: var(--pointSizePx);
+    margin: calc(var(--cellSizePx)/2 - var(--pointSizePx)/2);
+    background-color: rgba(0, 0, 255, 1);
+    box-shadow: 3px 3px 2px grey;
+    border: 2px solid white;
+    opacity: 1;
+    cursor: none;
+    transition: border var(--animSpeedPoint) ease, opacity var(--animSpeedPoint) ease, width var(--animSpeedPoint) ease, height var(--animSpeedPoint) ease, margin var(--animSpeedPoint) ease;
+}
+
+/* HTML: <div class="heart"></div> */
+.classHeart {
+    aspect-ratio: 1;
+    --_m: radial-gradient(#000 69%,#0000 70%) 84.5%/50%;
+    -webkit-mask-box-image: var(--_m);
+               mask-border: var(--_m);
+    clip-path: polygon(-41% 0,50% 91%, 141% 0);
+  }
+  /* fallback until better support for mask-border */
+  @supports not (-webkit-mask-box-image: var(--_m)) { 
+    .heart {
+      mask:
+       radial-gradient(at 70% 31%,#000 29%,#0000 30%),
+       radial-gradient(at 30% 31%,#000 29%,#0000 30%),
+       conic-gradient(#000 0 0) bottom/100% 50% no-repeat;
+    }
+  }
+
+.classLine {
+    position: absolute;
+    background-color: darkblue; /* Couleur de la ligne */
+    border: 2px solid white;
+    margin-top: calc(var(--cellSizePx)/2);
+    margin-left: calc(var(--cellSizePx)/2 - 3px);
+    width: 6px; /* Épaisseur de la ligne */
+    border-radius: 6px;
+    opacity: .6;
+    z-index: 10;
+    transform-origin: 'top center';
+
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    
+    transition: height var(--animSpeedLine) ease;
+}
+
+
+.classSimuLine {
+    position: absolute;
+    background-color: darkblue; /* Couleur de la ligne */
+    margin-top: 20px;
+    margin-left: 10px;
+    width: 20px; /* Épaisseur de la ligne */
+    border-radius: 20px;
+    opacity: .1;
+    z-index: -1;
+    transform-origin: 'top center';
+
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    
+    transition: opacity var(--animSpeedLine) ease;
+}
+
+
+.classPlayer0 {
+    background-color: rgba(0, 0, 255,.2);
+    border-radius: 20px;
+}
+
+.classPlayer1 {
+    background-color: rgba(255, 0, 0,.2);
+    border-radius: 20px;
+}
+
+.classScore {
+    cursor: pointer;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 50%;
+    border: 4px solid white;
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    user-select: none;
+    color: white;
+    z-index: 5;
+}
+#divScore0 {
+    top: 10px;
+    right : 60px;
+    background-color: darkblue;
+    mask: 
+    linear-gradient(red 0 0) padding-box, 
+    conic-gradient(red var(--p0, 17%), transparent 0%) border-box    
+}
+#divScore1 {
+    top: 10px;
+    right : 15px;
+    background-color: darkred;
+    mask: 
+    linear-gradient(red 0 0) padding-box, 
+    conic-gradient(red var(--p1, 27%), transparent 0%) border-box
+}
+
+
+
+/***********************************************************
+                         SNACKBAR
+************************************************************/
+
+#snackbar {
+    visibility: hidden;
+    transform: translateX(-50%);
+    min-width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+  }
+  
+  #snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  @-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+/**************************************************/
+
+/* ===============  ============= */
+
+
+.classNumber {
+    border-radius: 50%;
+    background-color: white;
+    color: black;
+    width: 10px;
+    height: 10px;
+    line-height: 10px;
+    text-align: center;
+    font-weight: 500;
+    margin: 0px;
+    padding: 2px;
+}
+
+
+/*************************************************************************************/
+
+
+
+#divMenuContainer {
+    position: fixed;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    overflow-y: auto;
+    top: -600px;
+    left: 50%;
+    width: 80%;
+    transform: translateX(-50%);
+    height:90%;
+    max-height: 600px;
+    background-color: rgb(var(--menuColorR), var(--menuColorG), var(--menuColorB));
+    color:white;
+    border-radius: 10px;
+    padding: 0px;
+    margin: 0px;
+    font-size: 14px;
+    user-select: none;
+    z-index: 999;
+    transition: top 1s ease;
+}
+
+
+
+.classCadre {
+    border-radius: 10px;
+    font-size: 14px;
+    user-select: none;
+    width: auto;
+    text-align: center;
+    color: black;
+    background-color:  rgb(205, 205, 205);
+
+    padding: 5px;
+    margin: 5px;
+
+}
+.classSousCadre {
+    border-radius: 10px;
+    padding: 2px;
+    margin: 2px;
+    user-select: none;
+    width: auto;
+    border: 1px solid rgb(var(--menuColorR), var(--menuColorG), var(--menuColorB));
+    text-align: left;    
+}
+.classHoriz {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.classBouton {
+    background-color: rgb(var(--menuColorR), var(--menuColorG), var(--menuColorB));
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 10px;
+    padding: 2px;
+    margin: 2px;
+    font-size: 18px;
+    user-select: none;
+}
+.classBoutonCfg {
+    font-size: 14px;
+}
+
+
+
+/******************************************************/
+
+datalist {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /*writing-mode: vertical-lr;*/
+    width: 100%;
+  }
+  
+  option {
+    padding: 0;
+  }
+  
+
+.rangeParams {
+    width: 150px;
+}
+.rangePlayers {
+    width: 100%;
+}
+
+/******************************************/
+
+
+/**************************************************/
+/***                                            ***/
+/***             Boutons Flottants              ***/
+/***                                            ***/
+/**************************************************/
+.overBtn {
+    cursor: pointer;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 50%;
+    border: 4px solid white;
+    background-color: lightgray;
+    position: fixed;
+    left: 10px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    user-select: none;
+}
+
+.underBtn {
+    cursor: pointer;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 50%;
+    border: 4px solid white;
+    background-color: lightgray;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    user-select: none;
+}
+
+#divMenuBtn {
+    top: 10px;
+    border-radius: 25%;
+    font-size: 14px;
+    font-weight: bold;
+    user-select: none;
+    width: auto;
+    text-align: center;
+    background-color: rgb(205, 205, 205);
+    padding-left: 5px;
+    padding-right: 5px;
+    margin: 0px;
+}
+
+#divFullScreen {
+    bottom: 60px;
+}
+
+#divSound {
+    bottom: 10px;
+}
+
+
+
+
+#svgFond {
+    padding: 0px;
+    margin: 0px;
+    z-index: 2;
+}
+
+
+
+
+
+
+
+
+
+.divDotStart {
+    position: absolute;
+    width: 20px; /* Largeur totale du damier */
+    height: 20px; /* Hauteur totale du damier */
+    margin: -10px; /* Décalage négatif pour centrer le point */
+    border-radius: 0px;
+    background-color: #fff;
+    background-image: linear-gradient(45deg, #0f0 25%, transparent 25%, transparent 75%, #0f0 75%), linear-gradient(45deg, #0f0 25%, transparent 25%, transparent 75%, #0f0 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+}
+.divDotFinish {
+    position: absolute;
+    width: 20px; /* Largeur totale du damier */
+    height: 20px; /* Hauteur totale du damier */
+    margin: -10px; /* Décalage négatif pour centrer le point */
+    border-radius: 0px;
+    background-color: #fff;
+    background-image: linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%), linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+}
+
+/*==========================================*/
+
+/* Définir l'animation de clignotement */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+.blinking {
+    animation: blink 1s infinite; /* 1s est la durée de l'animation, infinite signifie qu'elle se répète indéfiniment */
+}
+
+.connected-point {
+    background-color: darkblue;
+    color: #fff;
+    text-align: center;
+    font-size: 10px;
+    border-radius: 50%;
+    width: var(--pointSizePx);
+    height: var(--pointSizePx);
+    line-height: var(--pointSizePx);
+    margin: calc(var(--pointSizePx) * -.5);
+    position: absolute; /* Position absolue pour pouvoir les placer sur la grille */
+    user-select: none;
+    opacity: 0;
+    /*transition: opacity .5s ease;*/
+    z-index: 10;
+}
+
+.pointCrashed {
+    --b: 2px; /* thickness */
+    --s: 1px; /* space around */             
+    --c: #B90504;
+    font-size: 8px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid var(--c);
+    box-sizing: border-box;
+    --g:conic-gradient(var(--c) 0 0) no-repeat 50%/;
+    background: 
+      var(--g) var(--b) calc(100% - 2*var(--s)),
+      var(--g) calc(100% - 2*var(--s)) var(--b);
+    rotate: 45deg;
+}
+
+
+#divNextPoint {
+    background-color: white;
+    color: #fff;
+    text-align: center;
+    font-size: 10px;
+    border-radius: 50%;
+    width: var(--pointSizePx);
+    height: var(--pointSizePx);
+    line-height: var(--pointSizePx);
+    margin: calc(var(--pointSizePx) * -.5);
+    position: absolute; /* Position absolue pour pouvoir les placer sur la grille */
+    /*box-shadow: inset 0 0 0 5px darkblue; /* Bordure interne rouge de 5px */
+    /*transition: opacity .5s ease;*/
+    user-select: none;
+    z-index: 10;
+    opacity: 0;
+}
+.classMovePoint {
+    background-color: white;
+    color: #fff;
+    text-align: center;
+    font-size: 10px;
+    border-radius: 50%;
+    width: var(--pointSizePx);
+    height: var(--pointSizePx);
+    line-height: var(--pointSizePx);
+    margin: calc(var(--pointSizePx) * -.5);
+    position: absolute; /* Position absolue pour pouvoir les placer sur la grille */
+    user-select: none;
+    transition: top .4s ease,left .4s ease;
+    z-index: 9;
+    opacity: 0;
+}
+#divNextLine {
+    position: absolute;
+    /*background: linear-gradient(0deg, #00f 12.5%, transparent 12.5%, transparent 37.5%, #00f 37.5%, #00f 62.5%, transparent 62.5%, transparent 87.5%, #00f 87.5%);
+    background-size: 10px 10px;*/
+    opacity: 0;
+    width: 3px; /* Épaisseur de la ligne */
+    border-radius: 3px;
+    /*transition: opacity .5s ease;*/
+    z-index: 6;
+    opacity: 0;
+}
+
+
+
+#divCadreZoom {
+    position: absolute;
+    background-color: rgba(0, 0, 255, 0.5);
+    width: calc(var(--cellSizePx) * 3);
+    height: calc(var(--cellSizePx) * 3);
+    border-radius: 5px;
+    padding: 0px;
+    margin: 0px;
+    z-index: 4;
+    opacity: 0;
+    transition: opacity .5s ease, top .5s ease, left .5s ease;
+}
+#divCadreZoom2 {
+    position: absolute;
+    background-color: rgba(0, 0, 255, 0.2);
+    width: calc(var(--cellSizePx) * 3);
+    height: calc(var(--cellSizePx) * 3);
+    border-radius: 5px;
+    padding: 0px;
+    margin: 0px;
+    z-index: 5;
+    opacity: 0;
+    transition: opacity .5s ease, top .5s ease, left .5s ease;
+}
+
+
+
+.tracePoint {
+    position: absolute;
+    width: var(--pointSizePx);
+    height: var(--pointSizePx);
+    line-height: var(--pointSizePx);
+    margin: calc(var(--pointSizePx) * -.5);
+    background-color: rgba(12, 64, 11, 0.8); /* Couleur semi-transparente */
+    border-radius: 10%; /* Pour des points arrondis */
+    pointer-events: none; /* Empêche l'interaction avec les points */
+}
+
+
+#divTitleTrackName {
+    position: absolute;
+    left: 30px;
+    top: -70px;
+    z-index: 5;
+    color:#fff;
+    font-size: 40px;
+}
+
+/**************************************************/
+/***                                            ***/
+/***                  LOADING                   ***/
+/***                                            ***/
+/**************************************************/
+
+/* Couvrir tout l'écran */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /*background-color: rgba(var(--menuColorR), var(--menuColorG), var(--menuColorB));*/
+    color: white;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    
+    z-index: 9999; /* Au-dessus de tout */
+}
+/* Spinner de chargement simple */
+.loading-spinner {
+    border: 8px solid #f3f3f3; /* Couleur de fond */
+    border-top: 8px solid rgb(var(--menuColorR), var(--menuColorG), var(--menuColorB)); /* Couleur de l'animation */
+    border-radius: 50%;
+    margin: 20px;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+/* Animation pour le spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+
+/**************************************************/
+/***                                            ***/
+/***                  RIBBON                    ***/
+/***                                            ***/
+/**************************************************/
+
+
+/* HTML: <div class="ribbon">Your text content</div> */
+.ribbon {
+    position: fixed; /* Positionnement fixe par rapport à la fenêtre */
+    top: 10px;
+    left: 50%; /* Positionne l'élément au centre de la fenêtre */
+    transform: translateX(-50%);
+    opacity: 0;
+    font-size: 14px;
+    user-select: none;
+    text-align: center;
+    color: #fff;
+    transition: opacity 1s ease;
+
+    --s: 1.8em; /* the ribbon size */
+    --d: .8em;  /* the depth */
+    --c: .8em;  /* the cutout part */
+    
+    padding: var(--d) calc(var(--s) + .5em) 0;
+    line-height: 1.8;
+    background:
+      conic-gradient(from  45deg at left  var(--s) top var(--d),
+       #0008 12.5%,#0000 0 37.5%,#0004 0) 0   /50% 100% no-repeat,
+      conic-gradient(from -45deg at right var(--s) top var(--d),
+       #0004 62.5%,#0000 0 87.5%,#0008 0) 100%/50% 100% no-repeat;
+    clip-path: polygon(0 0,calc(var(--s) + var(--d)) 0,calc(var(--s) + var(--d)) var(--d),calc(100% - var(--s) - var(--d)) var(--d),calc(100% - var(--s) - var(--d)) 0,100% 0, calc(100% - var(--c)) calc(50% - var(--d)/2),100% calc(100% - var(--d)),calc(100% - var(--s)) calc(100% - var(--d)),calc(100% - var(--s)) 100%,var(--s) 100%,var(--s) calc(100% - var(--d)),0 calc(100% - var(--d)),var(--c) calc(50% - var(--d)/2));
+    background-color: #D95B43; /* the main color */
+    width: fit-content;
+  }
+
