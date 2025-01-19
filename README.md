@@ -1,4 +1,4 @@
-# 5inaRow
+# 🔵🔴5inaRow
 Align 5 dots in line ! Play against computer or your friend !
 Playable at :
 > https://svaret.freeboxos.fr/5inaRow/
